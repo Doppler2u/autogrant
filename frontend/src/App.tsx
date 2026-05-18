@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { createClient } from 'genlayer-js'
 import { studionet } from 'genlayer-js/chains'
 import { Globe, Zap, ShieldCheck, Cpu, ArrowRight, CheckCircle2, Loader2, XCircle, Wallet } from 'lucide-react'
@@ -130,7 +130,7 @@ function App() {
       // Wait for the consensus network to finalize the execution
       await client.waitForTransactionReceipt({
         hash: evalHash,
-        status: 'ACCEPTED',
+        status: 'ACCEPTED' as any,
         retries: 200,
       })
 
