@@ -16,6 +16,7 @@ function App() {
   
   const [result, setResult] = useState<{score: number, feedback: string, is_approved: boolean} | null>(null)
   const [errorMsg, setErrorMsg] = useState('')
+  const [isCached, setIsCached] = useState(false)
 
   const CONTRACT_ADDRESS = '0x78a3C98826C3bb26F20eD13EF95035afD682181f'
 
@@ -74,6 +75,7 @@ function App() {
     setResult(null)
     setSubmitTx('')
     setEvalTx('')
+    setIsCached(false)
     setStep(1)
 
     try {
@@ -100,7 +102,8 @@ function App() {
       }
 
       if (existingApp?.is_evaluated) {
-        // Already evaluated — just show the stored result
+        // Already evaluated — just show the stored result with a cached notice
+        setIsCached(true)
         setResult({ score: existingApp.score, feedback: existingApp.feedback, is_approved: existingApp.is_approved })
         setStep(3)
         return
@@ -340,6 +343,12 @@ function App() {
 
             {step === 3 && result && (
               <div className={`result-box ${result.is_approved ? 'approved' : 'rejected'}`}>
+                {isCached && (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginBottom: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', padding: '0.4rem 0.75rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                    <span>⚡</span>
+                    <span>Cached result — this project was already evaluated on-chain for your wallet. Submit a different GitHub URL to run a fresh evaluation.</span>
+                  </div>
+                )}
                 <h3>Consensus Reached</h3>
                 <div className="score">{result.score}<span style={{fontSize: '1rem', color: 'var(--text-muted)'}}>/100</span></div>
                 <p style={{ fontWeight: 500, color: result.is_approved ? 'var(--success)' : 'var(--error)', marginBottom: '1rem' }}>
